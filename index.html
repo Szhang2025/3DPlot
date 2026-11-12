@@ -33,6 +33,8 @@ select{appearance:none;background-image:url("data:image/svg+xml,%3Csvg width='12
 .error{color:#ff0066;font-size:12px;margin:-12px 0 12px;display:none}
 .error.show{display:block;animation:shake .3s ease}
 @keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}
+input[type=range]{width:100%;margin-bottom:6px;accent-color:#00ff88}
+#res-label{font-size:12px;color:#00ff88aa;margin-bottom:18px}
 #range{font-size:12px;color:#00ff88aa;margin-top:14px}
 #info{position:absolute;bottom:20px;right:20px;background:rgba(10,10,10,.9);border:2px solid #00ff8844;padding:15px;font-size:12px;color:#00ff88aa;max-width:300px;line-height:1.6}
 @media (max-width:700px){#info{display:none}}
@@ -56,6 +58,9 @@ select{appearance:none;background-image:url("data:image/svg+xml,%3Csvg width='12
     <option value="cool">Cool</option>
     <option value="hot">Hot</option>
   </select>
+  <label for="res">Resolution</label>
+  <input type="range" id="res" min="20" max="300" step="10" value="100">
+  <div id="res-label"></div>
   <button id="plot-btn">Generate Plot</button>
   <div id="range"></div>
   <div class="divider"></div>
@@ -65,8 +70,9 @@ select{appearance:none;background-image:url("data:image/svg+xml,%3Csvg width='12
     <button class="preset-btn" data-func="sin(sqrt(x*x + y*y))">Ripple</button>
     <button class="preset-btn" data-func="x*x - y*y">Saddle</button>
     <button class="preset-btn" data-func="sin(x) + sin(y)">Grid</button>
-    <button class="preset-btn" data-func="exp(-0.1*(x*x + y*y)) * cos(x) * cos(y)">Gaussian</button>
+    <button class="preset-btn" data-func="exp(-0.1*(x*x + y*y))">Gaussian</button>
     <button class="preset-btn" data-func="abs(sin(x*y/5))">Bumps</button>
+    <button class="preset-btn" data-func="exp(-0.1*(x*x + y*y)) * cos(x) * cos(y)">Damped Waves</button>
   </div>
 </div>
 
@@ -113,7 +119,7 @@ const colorSchemes = {
 };
 
 let surface = null, wire = null, scaleTimer = null;
-const HALF = 10, SEG = 100, BOX = 10;
+const HALF = 10, BOX = 10;
 
 function buildFunction(src) {
   const expr = src.replace(/\^/g, '**').trim();
@@ -125,6 +131,7 @@ function buildFunction(src) {
 
 function createSurface(src, scheme) {
   const f = buildFunction(src);
+  const SEG = +document.getElementById('res').value;
   const N = SEG + 1;
   const z = new Float32Array(N * N), ok = new Uint8Array(N * N);
   let minZ = Infinity, maxZ = -Infinity;
@@ -234,6 +241,11 @@ function plotFunction() {
   }
 }
 
+const resEl = document.getElementById('res'), resLabel = document.getElementById('res-label');
+function updateResLabel() { const n = +resEl.value; resLabel.textContent = `${n} × ${n} grid (${((n + 1) ** 2).toLocaleString()} points)`; }
+resEl.addEventListener('input', updateResLabel);
+resEl.addEventListener('change', plotFunction);
+updateResLabel();
 document.getElementById('plot-btn').addEventListener('click', plotFunction);
 document.getElementById('color-scheme').addEventListener('change', plotFunction);
 document.getElementById('function-input').addEventListener('keydown', e => { if (e.key === 'Enter') plotFunction(); });
