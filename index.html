@@ -36,6 +36,7 @@ select{appearance:none;background-image:url("data:image/svg+xml,%3Csvg width='12
 input[type=range]{width:100%;margin-bottom:6px;accent-color:#00ff88}
 #res-label{font-size:12px;color:#00ff88aa;margin-bottom:18px}
 .row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.hint{font-size:11px;line-height:1.5;color:#00ff8888;margin-top:8px}
 #range{font-size:12px;color:#00ff88aa;margin-top:14px}
 #info{position:absolute;bottom:20px;right:20px;background:rgba(10,10,10,.9);border:2px solid #00ff8844;padding:15px;font-size:12px;color:#00ff88aa;max-width:300px;line-height:1.6}
 @media (max-width:700px){#info{display:none}}
@@ -66,6 +67,7 @@ input[type=range]{width:100%;margin-bottom:6px;accent-color:#00ff88}
     <div><label for="domain">Domain ±</label><input type="number" id="domain" value="10" min="0.1" step="any"></div>
     <div><label for="zlimit">Z limit ±</label><input type="number" id="zlimit" placeholder="none" min="0" step="any"></div>
   </div>
+  <div class="hint">Domain ±: x and y each run from −Domain to +Domain (10 → −10 to 10). Z limit ±: cuts the surface where |z| exceeds it; leave empty for no cut.</div>
   <button id="plot-btn">Generate Plot</button>
   <div id="range"></div>
   <div class="divider"></div>
